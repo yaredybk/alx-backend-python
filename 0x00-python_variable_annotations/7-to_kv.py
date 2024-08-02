@@ -10,6 +10,6 @@
 from typing import Union, Tuple
 
 
-def to_kv(k: str, v: Union[int, float] -> Tuple[str, float]:
-          """generate square tuple"""
-          return (k, float(v**2))
+def to_kv(k: str, v: Union[int, float]) -> Tuple[str, float]:
+    """generate square tuple"""
+    return (k, float(v**2))

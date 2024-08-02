@@ -2,6 +2,6 @@
 """Basic annotations - add."""
 
 
-def to_str(float: float) -> str:
-    """Return the floor of the float."""
+def to_str(n: float) -> str:
+    """Return the string representation of input n."""
     return str(n)

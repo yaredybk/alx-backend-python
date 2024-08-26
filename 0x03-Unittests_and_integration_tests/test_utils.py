@@ -2,9 +2,10 @@
 """
 Python unit tests.
 """
+from parameterized import parameterized
+from typing import Tuple, Dict, Any
 import unittest
 from utils import access_nested_map, get_json, memoize
-from parameterized import parameterized
 
 
 class TestAccessNestedMap(unittest.testCase):
@@ -14,7 +15,9 @@ class TestAccessNestedMap(unittest.testCase):
         ("nested_map",{"a": {"b": 2}}, ("a"), ({"b": 2})),
         ("nested_map_access",{"a": {"b": 2}}, ("a", "b"), ({"b": 2},2))
     ])
-    def test_access_nested_map(self, name, nested_map, path, expected):
+    def test_access_nested_map(self, name: str, nested_map: Dict[str, Any],
+                               path: Tuple[str, ...], expected: Tuple[Any, ...]
+                               ) -> None:
         """test_access_nested_map"""
         self.assertEqual(access_nested_map(nested_map, path), expected, name)
     
@@ -22,6 +25,10 @@ class TestAccessNestedMap(unittest.testCase):
         ("simple_map",{}, ("a")),
         ("nested_map",{"a": 1}, ("a", "b"))
     ])
-    def test_access_nestest_access_nested_map_exceptionted_map(self, name, nested_map, path, expected):
+    def test_access_nested_map_exception(self, name: str,
+                                         nested_map: Dict[str, Any],
+                                         path: Tuple[str, ...],
+                                         expected: KeyError) -> None:
         """test_access_nested_map"""
-        self.assertRaises(access_nested_map(nested_map,path), KeyError, name)
+        with self.assertRaises(KeyError, msg=name) as e:
+            access_nested_map(nested_map,path)

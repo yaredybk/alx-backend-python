@@ -2,10 +2,12 @@
 """
 Python unit tests.
 """
+import requests
 from parameterized import parameterized
 from typing import Tuple, Dict, Any
 import unittest
-from utils import access_nested_map, get_json, memoize
+from unittest.mock import patch
+from utils import (access_nested_map, get_json, memoize)
 
 
 class TestAccessNestedMap(unittest.testCase):
@@ -32,3 +34,23 @@ class TestAccessNestedMap(unittest.testCase):
         """test_access_nested_map"""
         with self.assertRaises(KeyError, msg=name) as e:
             access_nested_map(nested_map,path)
+
+class TestGetJson(unittest.TestCase):
+    """Test get json by mocking requists"""
+
+    @parameterized.expand([
+            ("http://example.com", {"payload": True}),
+            ("http://holberton.io", {"payload": False})
+        ])
+    def test_get_json(self, test_url: str, test_payload: Dict[str, Any]) -> None:
+        """test get json"""
+        config: Dict[str, Any] = {'return_value.json.return_value': test_payload}
+        patcher = patch('requests.get', **config)
+        mock = patcher.start()
+        self.assetEqual(get_json(test_url), test_payload)
+        mock.assert_called_once()
+        patcher.stop()
+
+
+
+

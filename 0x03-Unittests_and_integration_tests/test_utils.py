@@ -10,18 +10,18 @@ from unittest.mock import patch
 from utils import (access_nested_map, get_json, memoize)
 
 
-class TestAccessNestedMap(unittest.testCase):
+class TestAccessNestedMap(unittest.TestCase):
     """Test Access nested map with key path."""
     @parameterized.expand([
         ("simple_map",{"a": 1}, ("a"),(1)),
         ("nested_map",{"a": {"b": 2}}, ("a"), ({"b": 2})),
-        ("nested_map_access",{"a": {"b": 2}}, ("a", "b"), ({"b": 2},2))
+        ("nested_map_access",{"a": {"b": 2}}, ("a", "b"), (2))
     ])
     def test_access_nested_map(self, name: str, nested_map: Dict[str, Any],
                                path: Tuple[str, ...], expected: Tuple[Any, ...]
                                ) -> None:
         """test_access_nested_map"""
-        self.assertEqual(access_nested_map(nested_map, path), expected, name)
+        self.assertEqual(access_nested_map(nested_map, path), expected)
     
     @parameterized.expand([
         ("simple_map",{}, ("a")),
@@ -29,11 +29,10 @@ class TestAccessNestedMap(unittest.testCase):
     ])
     def test_access_nested_map_exception(self, name: str,
                                          nested_map: Dict[str, Any],
-                                         path: Tuple[str, ...],
-                                         expected: KeyError) -> None:
+                                         path: Tuple[str, ...]) -> None:
         """test_access_nested_map"""
         with self.assertRaises(KeyError, msg=name) as e:
-            access_nested_map(nested_map,path)
+            access_nested_map(nested_map, path)
 
 class TestGetJson(unittest.TestCase):
     """Test get json by mocking requists"""
@@ -47,10 +46,6 @@ class TestGetJson(unittest.TestCase):
         config: Dict[str, Any] = {'return_value.json.return_value': test_payload}
         patcher = patch('requests.get', **config)
         mock = patcher.start()
-        self.assetEqual(get_json(test_url), test_payload)
+        self.assertEqual(get_json(test_url), test_payload)
         mock.assert_called_once()
         patcher.stop()
-
-
-
-
